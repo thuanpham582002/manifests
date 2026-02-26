@@ -34067,12 +34067,21 @@ spec:
             privileged: false
             readOnlyRootFilesystem: true
             runAsNonRoot: true
+          volumeMounts:
+            - mountPath: /tmp/k8s-webhook-server/serving-certs
+              name: cert
+              readOnly: true
       securityContext:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
       serviceAccountName: kserve-localmodel-controller-manager
       terminationGracePeriodSeconds: 10
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: localmodel-webhook-server-cert
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -34265,6 +34274,23 @@ spec:
     kind: Issuer
     name: selfsigned-issuer
   secretName: llmisvc-webhook-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app: kserve
+    app.kubernetes.io/name: kserve
+  name: localmodel-serving-cert
+  namespace: kubeflow
+spec:
+  commonName: kserve-localmodel-webhook-server-service.kubeflow.svc
+  dnsNames:
+    - kserve-localmodel-webhook-server-service.kubeflow.svc
+  issuerRef:
+    kind: Issuer
+    name: selfsigned-issuer
+  secretName: localmodel-webhook-server-cert
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
