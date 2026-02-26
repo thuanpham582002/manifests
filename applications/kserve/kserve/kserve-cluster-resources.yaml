@@ -634,7 +634,7 @@ metadata:
   name: default
 spec:
   container:
-    image: kserve/storage-initializer:v0.16.0
+    image: ghcr.io/thuanpham582002/storage-initializer:master-ee4d115
     name: storage-initializer
     resources:
       limits:
