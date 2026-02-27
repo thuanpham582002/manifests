@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
 # Install KServe in kubeflow namespace
 - kserve_kubeflow.yaml
-- kserve-cluster-resources.yaml
+# Note: kserve-cluster-resources.yaml removed (uses namespace: kserve, not kubeflow)
 
 patches:
 # Delete the kserve-localmodelnode-agent DaemonSet
@@ -44,19 +44,14 @@ patches:
             seccompProfile:
               type: RuntimeDefault
 
-# Delete ALL insecure LLMInferenceServiceConfig resources
-# IPC_LOCK, SYS_RAWIO, NET_RAW capabilities, runAsNonRoot: false
-# Ref: https://github.com/kubeflow/manifests/issues/3290
+# Delete kserve-config-llm-router-route - template syntax in path fails CRD validation
 - patch: |
     apiVersion: serving.kserve.io/v1alpha1
     kind: LLMInferenceServiceConfig
     metadata:
-      name: placeholder
+      name: kserve-config-llm-router-route
+      namespace: kubeflow
     $patch: delete
-  target:
-    group: serving.kserve.io
-    version: v1alpha1
-    kind: LLMInferenceServiceConfig
 
 # Delete the ValidatingWebhookConfiguration for LLM resources
 # Webhook server (llmisvc-webhook-server-service) is not running — EOF errors

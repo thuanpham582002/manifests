@@ -33341,6 +33341,7 @@ rules:
   - inference.networking.x-k8s.io
   resources:
   - inferencemodels
+  - inferenceobjectives
   - inferencepools
   verbs:
   - create
@@ -33416,6 +33417,31 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - inference.networking.k8s.io
+  resources:
+  - inferencepools
+  - inferenceobjectives
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -33963,7 +33989,7 @@ data:
     {
         "image" : "ghcr.io/thuanpham582002/storage-initializer:master-ee4d115",
         "memoryRequest": "100Mi",
-        "memoryLimit": "1Gi",
+        "memoryLimit": "2Gi",
         "cpuRequest": "100m",
         "cpuLimit": "1",
         "caBundleConfigMapName": "",
@@ -34191,6 +34217,7 @@ spec:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: manager
+        sidecar.istio.io/inject: "false"
       labels:
         app.kubernetes.io/name: kserve-localmodel-controller-manager
         control-plane: kserve-localmodel-controller-manager
@@ -34257,6 +34284,7 @@ spec:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: manager
+        sidecar.istio.io/inject: "false"
       labels:
         app.kubernetes.io/component: controller
         app.kubernetes.io/name: llmisvc-controller-manager
@@ -34480,7 +34508,7 @@ spec:
         value: INFO
       - name: HF_HUB_CACHE
         value: /models
-      image: ghcr.io/llm-d/llm-d-dev:v0.2.2
+      image: ghcr.io/llm-d/llm-d-cuda:v0.5.1-rc.4
       imagePullPolicy: IfNotPresent
       livenessProbe:
         failureThreshold: 3
@@ -34687,7 +34715,7 @@ spec:
         value: INFO
       - name: HF_HUB_CACHE
         value: /models
-      image: ghcr.io/llm-d/llm-d-dev:v0.2.2
+      image: ghcr.io/llm-d/llm-d-cuda:v0.5.1-rc.4
       imagePullPolicy: IfNotPresent
       livenessProbe:
         failureThreshold: 3
@@ -34895,7 +34923,7 @@ spec:
         value: /models
       - name: VLLM_RANDOMIZE_DP_DUMMY_INPUTS
         value: "1"
-      image: ghcr.io/llm-d/llm-d-dev:v0.2.2
+      image: ghcr.io/llm-d/llm-d-cuda:v0.5.1-rc.4
       imagePullPolicy: IfNotPresent
       name: main
       ports:
@@ -34966,7 +34994,7 @@ spec:
           value: INFO
         - name: HF_HUB_CACHE
           value: /models
-        image: ghcr.io/llm-d/llm-d-dev:v0.2.2
+        image: ghcr.io/llm-d/llm-d-cuda:v0.5.1-rc.4
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -35126,7 +35154,7 @@ spec:
           value: INFO
         - name: HF_HUB_CACHE
           value: /models
-        image: ghcr.io/llm-d/llm-d-dev:v0.2.2
+        image: ghcr.io/llm-d/llm-d-cuda:v0.5.1-rc.4
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -35283,7 +35311,7 @@ spec:
           value: INFO
         - name: HF_HUB_CACHE
           value: /models
-        image: ghcr.io/llm-d/llm-d-dev:v0.2.2
+        image: ghcr.io/llm-d/llm-d-cuda:v0.5.1-rc.4
         imagePullPolicy: IfNotPresent
         name: main
         ports:
@@ -35477,7 +35505,7 @@ spec:
         value: INFO
       - name: HF_HUB_CACHE
         value: /models
-      image: ghcr.io/llm-d/llm-d-dev:v0.2.2
+      image: ghcr.io/llm-d/llm-d-cuda:v0.5.1-rc.4
       imagePullPolicy: IfNotPresent
       livenessProbe:
         failureThreshold: 3
@@ -35635,7 +35663,7 @@ spec:
         value: INFO
       - name: HF_HUB_CACHE
         value: /models
-      image: ghcr.io/llm-d/llm-d-dev:v0.2.2
+      image: ghcr.io/llm-d/llm-d-cuda:v0.5.1-rc.4
       imagePullPolicy: IfNotPresent
       livenessProbe:
         failureThreshold: 3
@@ -35790,7 +35818,7 @@ spec:
         value: INFO
       - name: HF_HUB_CACHE
         value: /models
-      image: ghcr.io/llm-d/llm-d-dev:v0.2.2
+      image: ghcr.io/llm-d/llm-d-cuda:v0.5.1-rc.4
       imagePullPolicy: IfNotPresent
       name: main
       ports:
