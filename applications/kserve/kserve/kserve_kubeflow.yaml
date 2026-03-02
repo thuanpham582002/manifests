@@ -34968,12 +34968,16 @@ spec:
     scheduler:
       pool:
         spec:
-          extensionRef:
+          endpointPickerRef:
             failureMode: FailOpen
             kind: Service
             name: '{{ ChildName .ObjectMeta.Name `-epp-service` }}'
+            group: ""
+            port:
+              number: 9002
           selector: {}
-          targetPortNumber: 8000
+          targetPorts:
+            - number: 8000
       template:
         containers:
           - args:

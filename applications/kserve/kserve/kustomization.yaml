@@ -89,3 +89,42 @@ patches:
           "disableIngressCreation": false,
           "pathTemplate": "/serving/{{ .Namespace }}/{{ .Name }}"
         }
+      storageInitializer: |-
+        {
+          "image": "ghcr.io/thuanpham582002/storage-initializer:master-ee4d115",
+          "memoryRequest": "100Mi",
+          "memoryLimit": "2Gi",
+          "cpuRequest": "100m",
+          "cpuLimit": "1",
+          "caBundleConfigMapName": "",
+          "caBundleVolumeMountPath": "/etc/ssl/custom-certs",
+          "enableModelcar": true,
+          "cpuModelcar": "10m",
+          "memoryModelcar": "15Mi",
+          "uidModelcar": 0
+        }
+
+# Add USER env var, fsGroup, and SYS_PTRACE for modelcar /proc access (ptrace_scope=1)
+- patch: |
+    - op: add
+      path: /spec/template/containers/0/env/-
+      value:
+        name: USER
+        value: vllm
+    - op: add
+      path: /spec/template/securityContext
+      value:
+        fsGroup: 1010
+    - op: replace
+      path: /spec/template/containers/0/securityContext
+      value:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: false
+        runAsNonRoot: false
+        runAsUser: 0
+        seccompProfile:
+          type: RuntimeDefault
+  target:
+    kind: LLMInferenceServiceConfig
+    name: kserve-config-llm-template
+    namespace: kubeflow
