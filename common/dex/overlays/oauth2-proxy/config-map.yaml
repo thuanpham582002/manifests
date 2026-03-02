@@ -28,3 +28,4 @@ data:
       redirectURIs: ["/oauth2/callback"]
       name: 'Dex Login Application'
       secretEnv: OIDC_CLIENT_SECRET
+      public: true
