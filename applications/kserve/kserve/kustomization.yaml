@@ -16,7 +16,7 @@ patches:
       namespace: kubeflow
     $patch: delete
 
-# Add seccompProfile: RuntimeDefault to kserve-controller-manager
+# Add seccompProfile: RuntimeDefault and disable Istio sidecar injection
 - patch: |
     apiVersion: apps/v1
     kind: Deployment
@@ -25,12 +25,15 @@ patches:
       namespace: kubeflow
     spec:
       template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
         spec:
           securityContext:
             seccompProfile:
               type: RuntimeDefault
 
-# Add seccompProfile: RuntimeDefault to kserve-localmodel-controller-manager
+# Add seccompProfile: RuntimeDefault and disable Istio sidecar injection
 - patch: |
     apiVersion: apps/v1
     kind: Deployment
@@ -39,6 +42,9 @@ patches:
       namespace: kubeflow
     spec:
       template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
         spec:
           securityContext:
             seccompProfile:
